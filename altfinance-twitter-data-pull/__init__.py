@@ -13,77 +13,30 @@ import azure.functions as func
 load_dotenv()
 
 def code_runner():
-    api = twitter.api
+# altfinance
+    df = twitter.twitter_search('altfinanceng')
 
-    df = pd.DataFrame(columns='id text created_at user_screen_name user_followers_count Retweets Likes'.split())
+#altbank
+    df1 = twitter.twitter_search('altbank')
 
-    length = 100
-    today = dt.datetime.utcnow() + timedelta(days=1)
-    new_until = str(today)
+    df = pd.concat([df,df1])
 
+#altmall
+    df1 = twitter.twitter_search('altmall')
 
+    df = pd.concat([df,df1])
 
-    while length == 100:
-        new_until = new_until[:new_until.index(" ")]
-        alt_tweets = api.search_tweets("altfinanceng", tweet_mode="extended",lang = 'en',count=101,until = new_until)
-        
-        data = {
-        "id": [tweet.id_str for tweet in alt_tweets],
-        "text": [tweet.full_text for tweet in alt_tweets],
-        "created_at": [tweet.created_at for tweet in alt_tweets],
-        "user_screen_name": [tweet.user.screen_name for tweet in alt_tweets],
-        "user_followers_count": [tweet.user.followers_count for tweet in alt_tweets],
-        'Retweets': [tweet.retweet_count for tweet in alt_tweets],'Likes': [tweet.favorite_count for tweet in alt_tweets]}
-        
-        df1 = pd.DataFrame(data)
-        
-        df = pd.concat([df,df1])
-        
-        length = len(df1)
-        
-        new_until = df1.created_at.min() + timedelta(hours=24)
-        
-        new_until = str(new_until)
-    
-    length = 100
-    today = dt.datetime.utcnow()
-    new_until = str(today)
+#altinvest
+    df1 = twitter.twitter_search('altinvest')
 
-    dfb = pd.DataFrame(columns='id text created_at user_screen_name user_followers_count Retweets Likes'.split())
-    while length == 100:
-        new_until = new_until[:new_until.index(" ")]
-        alt_tweets = api.search_tweets("altbank", tweet_mode="extended",lang = 'en',count=101,until = new_until)
-        
-        data = {
-        "id": [tweet.id_str for tweet in alt_tweets],
-        "text": [tweet.full_text for tweet in alt_tweets],
-        "created_at": [tweet.created_at for tweet in alt_tweets],
-        "user_screen_name": [tweet.user.screen_name for tweet in alt_tweets],
-        "user_followers_count": [tweet.user.followers_count for tweet in alt_tweets],
-        'Retweets': [tweet.retweet_count for tweet in alt_tweets],'Likes': [tweet.favorite_count for tweet in alt_tweets]}
-        
-        df1 = pd.DataFrame(data)
-        
-        dfb = pd.concat([dfb,df1])
-        
-        length = len(df1)
-        
-        new_until = df1.created_at.min() + timedelta(hours=24)
-        
-        new_until = str(new_until)    
+    df = pd.concat([df,df1])
 
-
-
-
-
-
-
-
-    df = pd.concat([dfb,df])
-        
+# consolidate and transform
     df = df.drop_duplicates()
 
-    df = df[df.user_screen_name != 'AltFinanceNg'].copy()
+    alt_screen_names = 'AltFinanceNg AltInvestng Altmallng'.split()
+
+    df = df[~df.user_screen_name.isin(alt_screen_names)].copy()
 
     # removing retweeted tweets
     df['is_rt'] = df.text.apply(lambda x:x[:2])
