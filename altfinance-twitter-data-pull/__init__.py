@@ -6,7 +6,7 @@ import numpy as np
 
 from datetime import timedelta
 from dotenv import load_dotenv
-from . import azure_blob_uploader,sentiment_models,twitter,mail_sender
+from . import azure_blob_uploader,sentiment_models,twitter,mail_sender,google_app_store_pipeline
 
 import azure.functions as func
 
@@ -104,7 +104,8 @@ def code_runner():
 
     recepient = os.environ['Dammy']
     
-
+    google_app_store_pipeline.app_reviews()
+    
     mail_sender.send_email(send_to=recepient,subject=subject,body=message)
 
 
