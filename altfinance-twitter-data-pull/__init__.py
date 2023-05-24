@@ -12,6 +12,9 @@ import azure.functions as func
 
 load_dotenv()
 
+accountName = os.environ['ACCOUNT_NAME']
+containerName = os.environ['containerName']
+
 def code_runner():
 # altfinance
     df = twitter.twitter_search('altfinanceng')
@@ -44,7 +47,7 @@ def code_runner():
 
     df.drop('is_rt',axis=1,inplace=True)
 
-    df2 = pd.read_csv('https://safdatateamstorage.blob.core.windows.net/netcoreblob/saf_twitter_sentiment.csv')
+    df2 = pd.read_csv(f"https://{accountName}.blob.core.windows.net/{containerName}/saf_twitter_sentiment.csv")
 
     convert_dict = {'id': str,'user_followers_count':int
             }
