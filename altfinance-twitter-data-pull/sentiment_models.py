@@ -41,6 +41,13 @@ def sentiment_model(output1,output2):
     else:
         return 'Negative'
 
+new_stopwords = stopwords.words('english')
+
+add_words = "pls !!!!!! go last still get nothing Hello it's Im Na sssit without also make dey getting done really don't act try person always ive use one open I've".split()
+
+for word in add_words:
+    new_stopwords.append(word)
+new_stopwords = [word.lower() for word in new_stopwords]
 
 
 def text_process(text):
@@ -60,4 +67,4 @@ def text_process(text):
     nopunc = ''.join(nopunc)
     
     # Now just remove any stopwords
-    return ' '.join([word for word in nopunc.split() if word.lower() not in stopwords.words('english')])
+    return ' '.join([word for word in nopunc.split() if word.lower() not in new_stopwords])
