@@ -10,7 +10,7 @@ import json
 def app_reviews():
     app_dict = {
         'altbank':'1513246800',
-        'altpro':'1513246800',
+        'altpro':'1559357720',
         'altinvest':'1526012590',
         'activ8it':'1622615046'
     }
